@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Vue http client</title>
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css'>
+
+  <style>
+    html,
+    #app {
+      height: 100%;
+    }
+
+    p {
+      color: blue;
+    }
+  </style>
+
+
+  <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+</head>
+
+<body>
+
+  <div id="app">
+    <b-navbar type="dark" variant="dark">
+      <b-navbar-nav>
+        <b-navbar-brand href="#" center>
+          <h1>Server Overview</h1>
+        </b-navbar-brand>
+      </b-navbar-nav>
+    </b-navbar>
+    <b-container class="pt-3">
+      <b-row>
+        <b-col>
+          <b-card no-body>
+            <template #header>
+              <h3 class="mb-0">Posts</h3>
+            </template>
+            <b-card-body id="nav-scroller" ref="content" style="position:relative; height:500px; overflow-y:scroll;"
+              class="p-0">
+              <b-card v-for="(post, key) in posts" body-class="px-0 pb-0" class="m-1" :key="post.id"
+                border-variant="success" align="center">
+                <b-card-sub-title class="mb-2">Jemand schrieb:</b-card-sub-title>
+                <b-card-text>{{post.content}}</b-card-text>
+                <b-card-footer class="p-0">
+                  #{{post.id}}
+                </b-card-footer>
+              </b-card>
+            </b-card-body>
+          </b-card>
+        </b-col>
+        <b-col>
+
+          <b-form-input class="mb-2" v-model="url" placeholder="URL eingeben"></b-form-input>
+          <b-form-input class="mb-2" v-model="newPost" placeholder="Kommentar eingeben"></b-form-input>
+          <b-button variant="success" @click="getRequest">GET</b-button>
+          <b-button variant="dark" @click="postRequest">POST</b-button>
+          <b-button variant="warning" @click="putRequest">PUT</b-button>
+
+        </b-col>
+      </b-row>
+      {{$data}}
+    </b-container>
+  </div>
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-vue/2.18.1/bootstrap-vue.min.js'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js'></script>
+
+  <script src="./script.js"></script>
+
+
+
+</body>
+
+</html>
