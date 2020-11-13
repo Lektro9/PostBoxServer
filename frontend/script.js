@@ -2,7 +2,7 @@ new Vue({
   el: "#app",
   data: {
     posts: "",
-    url: "https://code.shmiede.de/proxy/3000/posts/",
+    url: "https://postbox.shmiede.de/posts",
     newPost: ""
   },
   methods: {
