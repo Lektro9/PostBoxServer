@@ -2,12 +2,22 @@ import express from "express";
 import bodyParser from "body-parser";
 import posts from "./models/post.js";
 import cors from "cors";
+import rateLimit from "express-rate-limit";
+
+
 
 const app = express()
 const port = 3000
 //
 //Middleware
 //
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 50 // limit each IP to 100 requests per windowMs
+});
+app.use(limiter);
+
 app.use(cors());
 app.use(express.static('frontend'))
 
@@ -17,7 +27,7 @@ app.use((req, res, next) => {
 });
 
 // app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '1mb'}));
 
 let infoLogger = (req, res, next) => {
   console.log(`A ${req.method}-request was made by ${req.ip}`);
