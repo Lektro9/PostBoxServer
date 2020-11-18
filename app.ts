@@ -23,7 +23,7 @@ const limiter = rateLimit({
 app.use(limiter);
 
 app.use(cors());
-app.use(express.static("frontend"));
+app.use(express.static("frontend", { etag: false }));
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.header("Access-Control-Allow-Origin", "*");
