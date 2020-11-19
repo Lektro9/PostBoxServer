@@ -2,16 +2,12 @@ import express, { Application, Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
-import Post from "./models/post";
+import Controller from "./controller/controller";
 
 const app: Application = express();
 const port = 3000;
 
-// some example Posts
-let exPost1: Post = new Post("1", "hello");
-let exPost2: Post = new Post("2", "hello");
-let exPost3: Post = new Post("3", "hello");
-let PostArr: Post[] = [exPost1, exPost2, exPost3];
+const controller = new Controller();
 //
 //Middleware
 //
@@ -47,28 +43,16 @@ app.use(infoLogger);
 //Routes
 //
 app.get("/posts/", (req: Request, res: Response) => {
-  res.send(PostArr);
+  res.send(controller.PostArr);
 });
 
 app.post("/posts/", (req: Request, res: Response) => {
   if (req.is("json") && req.body.content) {
-    let newPost = new Post(String(PostArr.length + 1), req.body.content);
-    PostArr.push(newPost);
-    res.send(PostArr);
-  } else {
-    res.send("wrong format, only json allowed");
-  }
-});
-
-app.put("/posts/:id/", function (req: Request, res: Response) {
-  if (req.is("json") && req.body.content) {
-    let editPost = PostArr.find((p) => p.id === req.params.id);
-    if (typeof editPost !== "undefined") {
-      editPost.content = req.body.content;
-      res.send(PostArr);
-    } else {
-      res.send("you send empty content, please check");
-    }
+    let newPost = controller.createNewPost(
+      String(controller.PostArr.length + 1),
+      req.body.content
+    );
+    res.send(controller.PostArr);
   } else {
     res.send("wrong format, only json allowed: {'content': 'msg'}");
   }

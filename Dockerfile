@@ -13,8 +13,8 @@ RUN npm install
 
 # Bundle app source
 COPY . .
+RUN npx tsc -p ./tsconfig.json
 
 EXPOSE 3000
 
-RUN tsc -p
 CMD [ "node", "./dist/app.js" ]
