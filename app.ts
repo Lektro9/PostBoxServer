@@ -3,11 +3,13 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
 import Controller from "./controller/controller";
+import fileUpload from "express-fileupload";
 
 const app: Application = express();
 const port = 3000;
 
 const controller = new Controller();
+controller.createExamplePosts();
 //
 //Middleware
 //
@@ -39,18 +41,31 @@ let infoLogger = (req: Request, res: Response, next: NextFunction) => {
 
 app.use(infoLogger);
 
+app.use(
+  fileUpload({
+    limits: { fileSize: 1 * 1024 * 1024 },
+  })
+);
+
 //
 //Routes
 //
-app.get("/posts/", (req: Request, res: Response) => {
+app.get("/api/chat", (req: Request, res: Response) => {
   res.send(controller.PostArr);
 });
 
-app.post("/posts/", (req: Request, res: Response) => {
+app.post("/api/chat", (req: Request, res: Response) => {
   if (req.is("json") && req.body.content) {
     let newPost = controller.createNewPost(
       String(controller.PostArr.length + 1),
       req.body.content
+    );
+    res.send(controller.PostArr);
+  } else if (typeof req.files !== "undefined") {
+    controller.storeFile(req.files.file1);
+    let newPost = controller.createNewPost(
+      String(controller.PostArr.length + 1),
+      req.files.file1.name
     );
     res.send(controller.PostArr);
   } else {

@@ -1,3 +1,4 @@
+import fileUpload from "express-fileupload";
 import Post from "../models/post";
 
 class Controller {
@@ -20,6 +21,10 @@ class Controller {
     let retVal = new Post(id, content);
     this.PostArr.push(retVal);
     return retVal;
+  }
+
+  storeFile(file: fileUpload.UploadedFile) {
+    file.mv(`/config/workspace/Microservices/PostBoxServer/uploads/${file.name}`);
   }
 }
 
