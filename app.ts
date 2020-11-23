@@ -8,6 +8,8 @@ import fileUpload from "express-fileupload";
 const app: Application = express();
 const port = 3000;
 
+const friendUrl = "http://localhost:3000/api/chat/botpost";
+
 const controller = new Controller();
 controller.createExamplePosts();
 //
@@ -54,12 +56,23 @@ app.get("/api/chat", (req: Request, res: Response) => {
   res.send(controller.PostArr);
 });
 
+app.post("/api/chat/botpost", (req: Request, res: Response) => {
+  if (req.is("json") && req.body.content) {
+    let newPost = controller.createNewPost(
+      String(controller.PostArr.length + 1),
+      req.body.content
+    );
+    res.send(controller.PostArr);
+  }
+});
+
 app.post("/api/chat", (req: Request, res: Response) => {
   if (req.is("json") && req.body.content) {
     let newPost = controller.createNewPost(
       String(controller.PostArr.length + 1),
       req.body.content
     );
+    controller.sendPost(newPost, friendUrl);
     res.send(controller.PostArr);
   } else if (typeof req.files !== "undefined") {
     controller.storeFile(req.files.file1);
@@ -69,7 +82,9 @@ app.post("/api/chat", (req: Request, res: Response) => {
     );
     res.send(controller.PostArr);
   } else {
-    res.send("wrong format, only json allowed: {'content': 'msg'}");
+    res.send(
+      "wrong format, only json allowed: {'content': 'msg'}, or upload a file"
+    );
   }
 });
 

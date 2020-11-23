@@ -1,5 +1,6 @@
 import fileUpload from "express-fileupload";
 import Post from "../models/post";
+import axios from "axios";
 
 class Controller {
   PostArr: Post[];
@@ -24,7 +25,31 @@ class Controller {
   }
 
   storeFile(file: fileUpload.UploadedFile) {
-    file.mv(`/config/workspace/Microservices/PostBoxServer/uploads/${file.name}`);
+    file.mv(
+      `/config/workspace/Microservices/PostBoxServer/uploads/${file.name}`
+    );
+  }
+  
+  sendPost(humanPost: Post, url: string) {
+    axios
+      .post(
+        url,
+        {
+          content: humanPost.content,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 }
 
