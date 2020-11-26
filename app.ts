@@ -8,7 +8,7 @@ import fileUpload from "express-fileupload";
 const app: Application = express();
 const port = 3000;
 
-const friendUrl = "http://localhost:3000/api/chat/botpost";
+const friendUrl = "https://postbox.shmiede.de/api/chat/botpost";
 
 const controller = new Controller();
 controller.createExamplePosts();
@@ -53,6 +53,7 @@ app.use(
 //Routes
 //
 app.get("/api/chat", (req: Request, res: Response) => {
+  console.log(controller.PostArr);
   res.send(controller.PostArr);
 });
 
@@ -80,6 +81,7 @@ app.post("/api/chat", (req: Request, res: Response) => {
       String(controller.PostArr.length + 1),
       req.files.file1.name
     );
+    controller.sendPost(newPost, friendUrl);
     res.send(controller.PostArr);
   } else {
     res.send(
