@@ -8,7 +8,7 @@ import fileUpload from "express-fileupload";
 const app: Application = express();
 const port = 3000;
 
-const friendUrl = "https://postbox.shmiede.de/api/chat/botpost";
+const friendUrl = "https://localhost/api/chat/botpost";
 
 const controller = new Controller();
 controller.createExamplePosts();
@@ -17,8 +17,8 @@ controller.createExamplePosts();
 //
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 50, // limit each IP to 100 requests per windowMs
+  windowMs: 10 * 60 * 1000, // 15 minutes
+  max: 500, // limit each IP to 100 requests per windowMs
 });
 app.use(limiter);
 
