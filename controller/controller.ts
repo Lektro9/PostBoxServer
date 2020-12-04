@@ -1,6 +1,7 @@
 import fileUpload from "express-fileupload";
 import Post from "../models/post";
 import axios from "axios";
+import fs from "fs";
 
 class Controller {
   PostArr: Post[];
@@ -25,11 +26,9 @@ class Controller {
   }
 
   storeFile(file: fileUpload.UploadedFile) {
-    file.mv(
-      `/config/workspace/Microservices/PostBoxServer/uploads/${file.name}`
-    );
+    file.mv(`./uploads/${file.name}`);
   }
-  
+
   sendPost(humanPost: Post, url: string) {
     axios
       .post(
@@ -46,6 +45,29 @@ class Controller {
       )
       .then((response) => {
         console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  sendFile(humanPost: Post, url: string) {
+    let formData = new FormData();
+    fs.readFile("./uploads/testdatei.json", "utf8", (err, data) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      formData.append("file1", data);
+    });
+    axios
+      .post(url, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log(response);
       })
       .catch(function (error) {
         console.log(error);

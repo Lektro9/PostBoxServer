@@ -59,7 +59,18 @@ app.post("/api/chat/botpost", (req: Request, res: Response) => {
       String(controller.PostArr.length + 1),
       req.body.content
     );
-    res.send(controller.PostArr);
+    res.send("OK!");
+  } else if (typeof req.files !== "undefined") {
+    controller.storeFile(req.files.file1);
+    let newPost = controller.createNewPost(
+      String(controller.PostArr.length + 1),
+      req.files.file1.name
+    );
+    res.send("OK!");
+  } else {
+    res.send(
+      "something went wrong, this api should only be used by a controller from another application."
+    );
   }
 });
 
