@@ -7,8 +7,6 @@ import fileUpload from "express-fileupload";
 const app: Application = express();
 const port = 3000;
 
-const friendUrl = "https://postbox.shmiede.de/api/chat/botpost";
-
 const controller = new Controller();
 controller.createExamplePosts();
 //
@@ -38,13 +36,11 @@ let infoLogger = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-app.use(infoLogger);
+let holidayGreetings = {
+  message: "hello from the dasdsadsadsa"
+}
 
-app.use(
-  fileUpload({
-    limits: { fileSize: 1 * 1024 * 1024 },
-  })
-);
+app.use(infoLogger);
 
 //
 //Routes
@@ -53,49 +49,13 @@ app.get("/api/chat", (req: Request, res: Response) => {
   res.send(controller.PostArr);
 });
 
-app.post("/api/chat/botpost", (req: Request, res: Response) => {
-  if (req.is("json") && req.body.content) {
-    let newPost = controller.createNewPost(
-      String(controller.PostArr.length + 1),
-      req.body.content
-    );
-    res.send("OK!");
-  } else if (typeof req.files !== "undefined") {
-    controller.storeFile(req.files.file1);
-    let newPost = controller.createNewPost(
-      String(controller.PostArr.length + 1),
-      req.files.file1.name
-    );
-    res.send("OK!");
-  } else {
-    res.send(
-      "something went wrong, this api should only be used by a controller from another application."
-    );
-  }
+app.get("/message", (req: Request, res: Response) => {
+  res.send(holidayGreetings);
 });
 
-app.post("/api/chat", (req: Request, res: Response) => {
-  if (req.is("json") && req.body.content) {
-    let newPost = controller.createNewPost(
-      String(controller.PostArr.length + 1),
-      req.body.content
-    );
-    controller.sendPost(newPost, friendUrl);
-    res.send(controller.PostArr);
-  } else if (typeof req.files !== "undefined") {
-    controller.storeFile(req.files.file1);
-    let newPost = controller.createNewPost(
-      String(controller.PostArr.length + 1),
-      req.files.file1.name
-    );
-    controller.sendPost(newPost, friendUrl);
-    res.send(controller.PostArr);
-  } else {
-    res.status(400);
-    res.send(
-      "wrong format, only json allowed: {'content': 'msg'}, or upload a file"
-    );
-  }
+app.post("/message", (req: Request, res: Response) => {
+  holidayGreetings.message = req.body.message;
+  res.send(holidayGreetings);
 });
 
 //
